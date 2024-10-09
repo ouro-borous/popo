@@ -1,6 +1,6 @@
 # popo
 
-A fork of respounder that passes honeycreds to any found responder.
+The "poisoner poisoner." A fork of respounder that passes honeycreds to any found responder.
 
 
 <img src="https://i.imgur.com/o1Gya0D.png" width=300px />
