@@ -13,6 +13,9 @@ import (
 	"os"
 	"strings"
 	"time"
+	//"smb"
+
+	"github.com/stacktitan/smb/smb"
 )
 
 const (
@@ -146,12 +149,30 @@ func checkResponderOnInterface(inf net.Interface) map[string]string {
 				"sourceIP":    ip.String(),
 				"responderIP": responderIP,
 			}
+
+			//At this point, we know that a responder exists. Send honeyhash here!
+			//NOTE: Add a flag that chooses between NTLMv1 and NTLMv2
+
+
+
+
 		} else {
 			fmt.Fprintln(outFile, "responder not detected")
 		}
 	}
 	return json
 }
+
+//Initiates and partially completes an SMB handshake. Expecting to receive NT Status 22 STATUS_ACCESS_DENIED from "SMB server" (actually, the responder)
+func authSMB(ip net.IP) int {
+	//Send SMB_COM_NEGOTIATE_REQUEST
+	//Recv SMB2 NEGOTIATE Response
+	//Send SMB2 SESSION_SETUP Request 1
+	//Recv SMB2 SESSION_SETUP Response 1
+	//Send SMB2 SESSION_SETUP Request 2
+	//Recv SMB2 SESSION_SETUP Response 2 (ACCESS_DENIED, probably)
+}
+
 
 // Creates and sends a LLMNR request to the UDP multicast address.
 func sendLLMNRProbe(ip net.IP) string {
@@ -199,6 +220,7 @@ func sendLLMNRProbe(ip net.IP) string {
 	}
 	return responderIP
 }
+
 
 // Calculate random hostname by taking random length
 // of the SHA1 of current time.
