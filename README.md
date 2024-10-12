@@ -26,8 +26,11 @@ go mod download
 ```
 
 **READ BEFORE YOU BUILD**
+
 At this point, we need to replace one of the files (smb.go) in the library. It doesn't like working with incomplete sessions.
+
 The zgrab2 library should be in your $GOROOT or $GOPATH, but during testing, downloading without those variables set was pretty inconsistent, so I don't feel like a script would be reliable.
+
 You're looking for a file path which looks something this: .../go/pkg/mod/github.com/stacktitan/smb@v0.0.0._____/smb/smb.go
 
 Once you've done these steps, the executable is ready to be built.
