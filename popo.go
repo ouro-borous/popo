@@ -13,19 +13,17 @@ import (
 	"os"
 	"strings"
 	"time"
-	//"smb"
 
 	"github.com/stacktitan/smb/smb"
 )
 
 const (
-	Banner = `
-
-     .´/
-    / (           .----------------.
-    [ ]░░░░░░░░░░░|// RESPOUNDER //|
-    ) (           '----------------'
-    '-'
+	Banner = `                                 
+	______   ____ ______   ____  
+	\____ \ /  _ \\____ \ /  _ \ 
+	|  |_> >  <_> )  |_> >  <_> )
+	|   __/ \____/|   __/ \____/ 
+	|__|          |__|           
 `
 
 	Version         = 1.2
@@ -151,10 +149,7 @@ func checkResponderOnInterface(inf net.Interface) map[string]string {
 			}
 
 			//At this point, we know that a responder exists. Send honeyhash here!
-			//NOTE: Add a flag that chooses between NTLMv1 and NTLMv2
-
-
-
+			authSMB(responderIP)
 
 		} else {
 			fmt.Fprintln(outFile, "responder not detected")
@@ -164,13 +159,28 @@ func checkResponderOnInterface(inf net.Interface) map[string]string {
 }
 
 //Initiates and partially completes an SMB handshake. Expecting to receive NT Status 22 STATUS_ACCESS_DENIED from "SMB server" (actually, the responder)
-func authSMB(ip net.IP) int {
-	//Send SMB_COM_NEGOTIATE_REQUEST
-	//Recv SMB2 NEGOTIATE Response
-	//Send SMB2 SESSION_SETUP Request 1
-	//Recv SMB2 SESSION_SETUP Response 1
-	//Send SMB2 SESSION_SETUP Request 2
-	//Recv SMB2 SESSION_SETUP Response 2 (ACCESS_DENIED, probably)
+func authSMB(ip string) int {
+
+	host := ip
+	fmt.Print("Sending honeycreds to " + host + "\n")
+	//EDIT HONEYCREDS HERE
+	options := smb.Options{
+		Host:        host,
+		Port:        445,
+		User:        "admin",
+		Domain:      "local",
+		Workstation: DefaultHostname,
+		Password:	"password",
+	}
+	debug := false
+	session, err := smb.NewSession(options, debug)
+	if strings.Contains(err.Error(), "NT Status Error:") {
+		log.Println("Success!")
+	}
+	defer session.Close()
+
+
+	return 0
 }
 
 
