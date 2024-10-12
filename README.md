@@ -1,70 +1,61 @@
 # popo
 
-The "poisoner poisoner." A fork of respounder that passes honeycreds to any found responder.
+The "poisoner poisoner." A fork of respounder that passes honeycreds to responders and other LLMNR poisoners.
 
-
-<img src="https://i.imgur.com/o1Gya0D.png" width=300px />
-
-# res·pound·er
-   <span>/rɪˈspaʊnd dər/</span></span>
-   <i>noun</i>
-   <ul>
-   <li>
-   <div style="margin-left:10px; display:inline;">
-   A tool that detects presence of a <a href=https://github.com/SpiderLabs/Responder>Responder</a> in the network
-   </div>
-   </li>
-   <li>
-   <div style="margin-left:10px; display:inline;">
-   Identifies compromised machines before hackers run away with the loot (hashes)
-   </div>
-   </li>
-   </ul>
-
-   Respounder sends LLMNR name resolution requests for made-up hostnames that do not exist.
-   In a normal non-adversarial network we do not expect such names to resolve.
-   However, a responder, if present in the network, will resolve such queries
-   and therefore will be forced to reveal itself.
 
 ## Download
 
 ### Latest Releases
-Respounder is available for 32/64 bit linux, OS X and Windows systems.
+Popo is available for 64-bit Linux. More versions will come later.
 Latest versions can be downloaded from the
-[Release](https://github.com/codeexpress/respounder/releases) tab above.
+[Release](https://github.com/io-project-cyber/popo/releases) tab above.
 
 ### Build from source
-This is a golang project with no dependencies. Assuming you have golang compiler installed,
-the following will build the binary from scratch
+This is a golang project with ~~no~~ one dependency. Sorry, respounder.
+
 ```
-$ git clone https://github.com/codeexpress/respounder
-$ cd respounder
-$ go build -o respounder respounder.go
+sudo apt update
+sudo apt install git golang
+
+#Get our repository
+git clone https://github.com/io-project-cyber/popo.git
+cd ./popo
+
+#Download the library we need (zgrab2)
+go mod download
+```
+
+**READ BEFORE YOU BUILD**
+At this point, we need to replace one of the files (smb.go) in the library. It doesn't like working with incomplete sessions.
+The zgrab2 library should be in your $GOROOT or $GOPATH, but during testing, downloading without those variables set was pretty inconsistent, so I don't feel like a script would be reliable.
+You're looking for a file path which looks something this: .../go/pkg/mod/github.com/stacktitan/smb@v0.0.0._____/smb/smb.go
+
+Once you've done these steps, the executable is ready to be built.
+```
+go build popo.go
 ```
 
 ## Usage
 
-Running `respounder` is as simple as invoking it on the command line.
+Running `popo` is as simple as invoking it on the command line.
 Example invocation:
 ```bash
-$ ./respounder
+$ ./popo
+	______   ____ ______   ____  
+	\____ \ /  _ \\____ \ /  _ \ 
+	|  |_> >  <_> )  |_> >  <_> )
+	|   __/ \____/|   __/ \____/ 
+	|__|          |__|           
 
-
-     .´/
-    / (           .----------------.
-    [ ]░░░░░░░░░░░|// RESPOUNDER //|
-    ) (           '----------------'
-    '-'
-
-[wlan0]    Sending probe from 192.168.0.19...   responder not detected
-[vmnet1]   Sending probe from 172.16.211.1...   responder not detected
-[vmnet8]   Sending probe from 172.16.55.1...    responder detected at 172.16.55.128
+[ens33]    Sending probe from 192.168.1.119...	responder detected at 192.168.1.160
+Sending honeycreds to 192.168.1.160
+2024/10/11 21:42:15 Success!
 ```
 
 ### Flags
 
 ```
-$ ./respounder [-json] [-debug] [-hostname testhostname | -rhostname]
+$ ./popo [-json] [-debug] [-hostname testhostname | -rhostname]
 
 Flags:
   -json
@@ -96,7 +87,7 @@ in a loop
 For eg. the following `crontab` runs respounder every minute and logs a JSON file to syslog
 whenever a responder is detected.
 ```bash
-* * * * * /path/to/respounder -json | /usr/bin/logger -t responder-detected
+* * * * * /path/to/popo -json | /usr/bin/logger -t responder-detected
 ```
 
 Example `syslog` entry:
@@ -105,10 +96,5 @@ code@express:~/$ sudo tail -f /var/log/syslog
 Feb  9 03:44:07 responder-detected: [{"interface":"vmnet8","responderIP":"172.16.55.128","sourceIP":"172.16.55.1"}]
 ```
 
-## Demo
-![Respounder in action](https://i.imgur.com/ymcDRnJ.gif)
-
-## Coming Up Next: Android App
-There are plans to port this tool to an android app so that adversarial Wi-Fi networks
-(eg. WiFi Pineapple or WiFi Pumpkin running responder) can be
-detected right from a mobile phone.
+## Future plans
+Sure, we can pass honeycreds. But how do we track them? How can we tell all of our machines that something is a honeycred and raise maximum alert if it's seen?
