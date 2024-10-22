@@ -8,7 +8,7 @@ The "poisoner poisoner." A fork of respounder that passes honeycreds to responde
 ### Latest Releases
 Popo is available for 64-bit Linux. More versions will come later.
 Latest versions can be downloaded from the
-[Release](https://github.com/io-project-cyber/popo/releases) tab above.
+[Release](https://github.com/ouro-borous/popo/releases) tab above.
 
 ### Build from source
 This is a golang project with ~~no~~ one dependency. Sorry, respounder.
@@ -18,7 +18,7 @@ sudo apt update
 sudo apt install git golang
 
 #Get our repository
-git clone https://github.com/io-project-cyber/popo.git
+git clone https://github.com/ouro-borous/popo.git
 cd ./popo
 
 #Download the library we need (zgrab2)
